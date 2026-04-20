@@ -1,0 +1,19 @@
+# --- Personal ---
+alias cat='bat -Pp'
+alias chromium-fix='rm $HOME/.config/chromium/{SingletonLock,SingletonSocket}'
+
+# --- Fedora 43 ---
+alias egrep='grep -E --color=auto'
+alias fgrep='grep -F --color=auto'
+alias grep='grep --color=auto'
+alias hh='hstr'
+alias l.='ls -d .* --color=auto'
+alias ll='ls -l --color=auto'
+alias ls='ls --color=auto'
+alias which='(alias; declare -f) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot'
+alias xzegrep='xzegrep --color=auto'
+alias xzfgrep='xzfgrep --color=auto'
+alias xzgrep='xzgrep --color=auto'
+alias zegrep='zegrep --color=auto'
+alias zfgrep='zfgrep --color=auto'
+alias zgrep='zgrep --color=auto'
