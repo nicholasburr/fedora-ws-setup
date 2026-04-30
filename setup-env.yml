@@ -1,0 +1,68 @@
+---
+- name: This playbook setups the contents in /home/$USER/
+  hosts: localhost
+  connection: local
+  pre_tasks:
+    - name: Install packages
+      become: yes
+      ansible.builtin.dnf:
+        name: 
+          - neovim
+          - nodejs
+          - yarnpkg
+        state: present
+
+  tasks:
+    - name: create ~/.bashrc.d directory
+      ansible.builtin.file:
+        path: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d"
+        mode: 0744
+        state : directory
+      tags:
+        - bashrc
+
+    - name: Setup bash configuration files.
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: 0600 
+      loop:
+        - src: templates/home/.bashrc
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc"
+        - src: templates/home/.bashrc.d/alias.bashrc 
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/alias.bashrc"
+        - src: templates/home/.bashrc.d/functions.bashrc 
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/functions.bashrc" 
+        - src: templates/home/.bashrc.d/history.bashrc 
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/history.bashrc"
+        - src: templates/home/.bashrc.d/ssh.bashrc 
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/ssh.bashrc"
+        - src: templates/home/.bashrc.d/tmux.bashrc 
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/tmux.bashrc"
+        - src: templates/home/.bashrc.d/variables.bashrc
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/variables.bashrc"
+      tags:
+        - bashrc
+
+    - name: Setup tmux configuration files.
+      ansible.builtin.copy:
+        src: templates/home/.tmux.conf 
+        dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.tmux.conf"
+        mode: 0600
+      tags:
+         - tmux
+
+    - name: Clone Tmux Plugin Manager repoistory. 
+      ansible.builtin.git:
+        repo: https://github.com/tmux-plugins/tpm 
+        dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.tmux/plugins/tpm"
+      tags:
+        - tmux
+
+    - name: Setup vim configuration files.
+      ansible.builtin.copy:
+        src: templates/home/.vimrc
+        dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.vimrc"
+        mode: 0600
+      tags:
+        - vim
