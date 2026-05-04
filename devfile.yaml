@@ -1,0 +1,69 @@
+---
+schemaVersion: 2.2.0
+metadata:
+  name: openshift-troubleshooting-workspace
+  displayName: OpenShift 4 Troubleshooting
+  description: A dedicated workspace equipped with the oc CLI, kubectl, helm, and essential network troubleshooting tools.
+  version: 1.0.0
+  tags:
+    - OpenShift
+    - Admin
+    - Troubleshooting
+    - CLI
+components:
+  - name: tools-container
+    container:
+      # The UDI natively includes oc, kubectl, helm, jq, curl, git, and more
+      image: quay.io/devfile/universal-developer-image:ubi8-latest
+      memoryLimit: 1.5Gi
+      memoryRequest: 512Mi
+      cpuLimit: 1000m
+      cpuRequest: 500m
+      env:
+        # Redirect kubeconfig to a persistent directory so login sessions are saved
+        - name: KUBECONFIG
+          value: /projects/.kube/config
+      volumeMounts:
+        - name: kubeconfig-store
+          path: /projects/.kube
+
+  # Persistent volume to store cluster authentication across workspace restarts
+  - name: kubeconfig-store
+    volume:
+      size: 1Gi
+
+commands:
+  - id: install-debug-tools
+    exec:
+      label: "Install Extra Networking & Debugging Tools"
+      component: tools-container
+      commandLine: |
+        echo "Installing advanced troubleshooting tools..."
+        sudo dnf install -y bind-utils iproute net-tools nmap-ncat tcpdump traceroute telnet httpie yq htop
+        echo "✅ Troubleshooting tools installed successfully."
+        echo ""
+        echo "---- Installed Versions ----"
+        oc version --client
+        helm version --short
+      workingDir: /projects
+      group:
+        kind: build
+        isDefault: true
+
+  - id: oc-login
+    exec:
+      label: "Login to OpenShift Cluster"
+      component: tools-container
+      commandLine: |
+        echo "Please enter your OpenShift API URL (e.g., https://api.cluster.example.com:6443):"
+        read API_URL
+        oc login $API_URL
+      workingDir: /projects
+      group:
+        kind: run
+        isDefault: true
+
+events:
+  # Automatically run the tool installation script when the workspace starts
+  postStart:
+    - install-debug-tools
