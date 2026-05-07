@@ -1,3 +1,6 @@
 [user]
 	email = nbburr@gmail.com
 	name = Nicholas Burr
+[init]
+        defaultBranch = main
+

@@ -1,7 +1,6 @@
 ---
 - name: This playbook setups the contents in /home/$USER/
-  hosts: localhost
-  connection: local
+  hosts: all
   pre_tasks:
     - name: Install packages
       become: yes
@@ -27,26 +26,26 @@
         dest: "{{ item.dest }}"
         mode: 0600 
       loop:
-        - src: templates/home/.bashrc
+        - src: files/home/.bashrc
           dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc"
-        - src: templates/home/.bashrc.d/alias.bashrc 
+        - src: files/home/.bashrc.d/alias.bashrc 
           dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/alias.bashrc"
-        - src: templates/home/.bashrc.d/functions.bashrc 
+        - src: files/home/.bashrc.d/functions.bashrc 
           dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/functions.bashrc" 
-        - src: templates/home/.bashrc.d/history.bashrc 
+        - src: files/home/.bashrc.d/history.bashrc 
           dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/history.bashrc"
-        - src: templates/home/.bashrc.d/ssh.bashrc 
+        - src: files/home/.bashrc.d/ssh.bashrc 
           dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/ssh.bashrc"
-        - src: templates/home/.bashrc.d/tmux.bashrc 
+        - src: files/home/.bashrc.d/tmux.bashrc 
           dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/tmux.bashrc"
-        - src: templates/home/.bashrc.d/variables.bashrc
+        - src: files/home/.bashrc.d/variables.bashrc
           dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc.d/variables.bashrc"
       tags:
         - bashrc
 
     - name: Setup tmux configuration files.
       ansible.builtin.copy:
-        src: templates/home/.tmux.conf 
+        src: files/home/.tmux.conf 
         dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.tmux.conf"
         mode: 0600
       tags:
@@ -61,8 +60,8 @@
 
     - name: Setup vim configuration files.
       ansible.builtin.copy:
-        src: templates/home/.vimrc
-        dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.vimrc"
+        src: files/home/.config/nvim/init.vim
+        dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.config/nvim/init.vim"
         mode: 0600
       tags:
         - vim
