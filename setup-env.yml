@@ -61,7 +61,7 @@
     - name: create ~/.bashrc.d directory
       ansible.builtin.file:
         path: "{{ lookup('ansible.builtin.env', 'HOME') }}/.config/nvim"
-        mode: 0600
+        mode: 0755
         state : directory
       tags:
         -  nvim 
