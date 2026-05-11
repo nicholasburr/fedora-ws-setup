@@ -1,8 +1,7 @@
 # --- Personal ---
 alias cat='bat -Pp'
 alias chromium-fix='rm $HOME/.config/chromium/{SingletonLock,SingletonSocket}'
-alias vim='nvim .'
-alias nvim='nvim .'
+alias vim='nvim'
 
 # --- Fedora ---
 alias egrep='grep -E --color=auto'
