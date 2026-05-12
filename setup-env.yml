@@ -80,6 +80,30 @@
       ansible.builtin.copy:
         src: files/home/.config/nvim/init.vim
         dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.config/nvim/init.vim"
-        mode: 0600
+        mode: '0600'
       tags:
         - nvim
+
+    - name: create ~/.local/bin directory
+      ansible.builtin.file:
+        path: "{{ lookup('ansible.builtin.env', 'HOME') }}/.local/bin"
+        mode: 0744
+        state : directory
+      tags:
+        - oc
+
+    - name: install openshift cli components
+      ansible.builtin.unarchive:
+        src: "{{ item.src }}" 
+        dest: "{{ item.dest }}"
+        mode: '0755'
+        remote_src: yes
+        keep_newer: yes
+        list_files: yes
+      loop:
+        - src: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.20.14/openshift-install-linux-4.20.14.tar.gz
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.local/bin"
+        - src: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.20.14/openshift-client-linux-4.20.14.tar.gz 
+          dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.local/bin"
+      tags:
+        - oc
