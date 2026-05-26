@@ -9,6 +9,10 @@
           - neovim
           - nodejs
           - yarnpkg
+          - tmux
+          - git
+          - hstr
+          - ansible-core
         state: present
 
   tasks:
